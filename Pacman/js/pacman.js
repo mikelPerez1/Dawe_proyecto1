@@ -22,7 +22,8 @@ var GF = function(){
 	
 	
 		
-
+	
+		
 
 	// >=test2
  	// variables para contar frames/s, usadas por measureFPS
@@ -30,7 +31,7 @@ var GF = function(){
 	var lastTime;
 	var fpsContainer;
 	var fps; 
- 	
+	var mov;
  	// >=test4
 	//  variable global temporalmente para poder testear el ejercicio
 	inputStates = {};
@@ -67,6 +68,8 @@ var GF = function(){
 		this.id = id;
 		this.homeX = 0;
 		this.homeY = 0;
+
+		
 
 		this.draw = function(){
 			// test10
@@ -112,23 +115,36 @@ var GF = function(){
 		this.lvlHeight = 0;
 		
 		this.map = [];
-		
+		var map = [];
+		var level=this;
 		this.pellets = 0;
 		this.powerPelletBlinkTimer = 0;
 
 		this.setMapTile = function(row, col, newValue){
 			// test5
 			// Tu código aquí
+			level=this;
+			map[col].push(newValue);
 		};
 
 		this.getMapTile = function(row, col){
 			// test5
-			// Tu código aquí	
+			// Tu código aquí
+			return map[row][col];	
 		};
 
 		this.printMap = function(){
 			// test5
 			// Tu código aquí
+			let numeros2=""
+      for (var j=0;j<map.length/2;j++){
+      	for(var i=0;i<map[j].length;i++){
+        	numeros2 +=level.getMapTile(j,i);
+          numeros2 += " ";
+        }
+        console.log(numeros2);
+        numeros2=""
+      }
 		};
 
 		this.loadLevel = function(){
@@ -136,7 +152,44 @@ var GF = function(){
 			// Tu código aquí
 			// leer res/levels/1.txt y guardarlo en el atributo map	
 			// haciendo uso de setMapTile
-		
+		var url="https://raw.githubusercontent.com/AinhoY/froga/main/1.txt";
+   
+      	var consulta = new XMLHttpRequest();
+		consulta.open("GET",url);
+			
+     	consulta.onload = function() {
+		if (consulta.status == 200) {
+ 				
+        	var respuesta=consulta.responseText;
+        
+     		var datos= respuesta.split("\n");
+     			
+    		var width=datos[0].split(" ")[2];
+     		var height=datos[1].split(" ")[2];
+          
+     		for (var k = 0; k < height; k++) {
+    			map[k] = new Array();
+			}
+     		for (var j=0;j<height;j++){
+     
+     			var values=datos[j+4].split(" ");
+        		map.push(j);
+				
+     			for (var i=0;i<width;i++){
+        			var valor=parseInt(values[i]);
+        
+          			level.setMapTile(i,j,valor);
+        }
+     }
+    
+     //level.printMap();
+     
+          }
+		  //level.drawMap();
+		  //player.draw(player.x,player.y);
+       };
+		 consulta.send();
+     
 			// test10
 			// Tu código aquí
 		};
@@ -155,6 +208,80 @@ var GF = function(){
 		
 			// test6
 			// Tu código aquí
+			try{
+			for (var i=0;i<=thisGame.screenTileSize[1];i++){
+			
+				for(var j=0;j<=thisGame.screenTileSize[0];j++){
+				  var valor=this.getMapTile(j,i);
+				   console.log(valor);
+				
+				if (valor>=100){
+					ctx.beginPath();
+				  	ctx.moveTo(i*TILE_WIDTH,j*TILE_HEIGHT);
+					ctx.lineTo((i+1)*TILE_WIDTH,j*TILE_HEIGHT);
+				  	ctx.lineTo((i+1)*TILE_WIDTH,(j+1)*TILE_HEIGHT);
+				  	ctx.lineTo(i*TILE_WIDTH,(j+1)*TILE_HEIGHT);
+				  	ctx.lineTo(i*TILE_WIDTH,j*TILE_HEIGHT);
+					ctx.closePath();
+				  	ctx.fillStyle = "Blue";
+					ctx.fill();
+				}
+				
+				 else if (valor==3){
+				 
+					ctx.beginPath();
+				  	ctx.moveTo(i*TILE_WIDTH,j*TILE_HEIGHT);
+					ctx.lineTo((i+1)*TILE_WIDTH,j*TILE_HEIGHT);
+				  	ctx.lineTo((i+1)*TILE_WIDTH,(j+1)*TILE_HEIGHT);
+				  	ctx.lineTo(i*TILE_WIDTH,(j+1)*TILE_HEIGHT);
+				 	ctx.lineTo(i*TILE_WIDTH,j*TILE_HEIGHT);
+					ctx.closePath();
+				  	ctx.fillStyle = "Black";
+					ctx.fill();
+					ctx.beginPath();
+					ctx.arc(i*TILE_WIDTH+TILE_WIDTH/2,j*TILE_HEIGHT+TILE_HEIGHT/2,5,0,2*Math.PI,false);
+					ctx.fillStyle="Red";
+				  	ctx.fill();
+				  
+				}
+				 else if (valor==2){
+				
+					ctx.beginPath();
+					ctx.moveTo(i*TILE_WIDTH,j*TILE_HEIGHT);
+					ctx.lineTo((i+1)*TILE_WIDTH,j*TILE_HEIGHT);
+					ctx.lineTo((i+1)*TILE_WIDTH,(j+1)*TILE_HEIGHT);
+					ctx.lineTo(i*TILE_WIDTH,(j+1)*TILE_HEIGHT);
+					ctx.lineTo(i*TILE_WIDTH,j*TILE_HEIGHT);
+					ctx.closePath();
+					ctx.fillStyle = "Black";
+					ctx.fill();
+					ctx.beginPath();
+					ctx.arc(i*TILE_WIDTH+TILE_WIDTH/2,j*TILE_HEIGHT+TILE_HEIGHT/2,5,0,2*Math.PI,false);
+					ctx.fillStyle="White";
+					ctx.fill();
+				  
+				}
+				else {
+					ctx.beginPath();
+				 	ctx.moveTo(i*TILE_WIDTH,j*TILE_HEIGHT);
+					ctx.lineTo((i+1)*TILE_WIDTH,j*TILE_HEIGHT);
+					ctx.lineTo((i+1)*TILE_WIDTH,(j+1)*TILE_HEIGHT);
+					ctx.lineTo(i*TILE_WIDTH,(j+1)*TILE_HEIGHT);
+					ctx.lineTo(i*TILE_WIDTH,j*TILE_HEIGHT);
+					ctx.closePath();
+					ctx.fillStyle = "Black";
+					ctx.fill();
+				}
+				
+				
+			  }
+			
+			}
+		}
+		catch(e){
+			
+		}
+	
 		};
 
 		// >=test7
@@ -236,8 +363,34 @@ var GF = function(){
 		pacman.posX=pacman.posX-pacman.speed;
 		}
 		*/
+
+		//test 4
+		console.log(mov);
+		if(mov=="right"){
+			if(player.x<(w-player.radius*2)){
+			  player.x=player.x+player.speed;
+		  }
+		}
+		if(mov=="left"){
+			if(player.x>0){
+			  player.x=player.x-player.speed;
+		  }
+		}
+		if(mov=="up"){
+			if(player.y>0){
+			  player.y=player.y-player.speed;
+		  }
+		}
+		if(mov=="down"){
+			if(player.y<h-player.radius*2){
+			  player.y=player.y+player.speed;
+		  }
+		}
+		
+		//player.draw(player.x,player.y);
+		
 	   
-		pacman.draw(pacman.posX,pacman.posY);
+		//pacman.draw(pacman.posX,pacman.posY);
 		
 		///////////////
 
@@ -280,7 +433,20 @@ ctx.fill();
 ctx.beginPath();
 ctx.arc(x+pacman.radius, y+pacman.radius, pacman.radius, (1-pacman.angle1) * Math.PI, pacman.angle2 * Math.PI, false);
 ctx.fill();
-		*/
+
+***test 2 pero con la variable pacman cambiada a player:
+*/
+		ctx.beginPath();
+		ctx.arc(x+player.radius, y+player.radius, player.radius, player.angle1 * Math.PI, (1+player.angle1) * Math.PI, false);
+		ctx.fillStyle = "Yellow";
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(x+player.radius, y+player.radius, player.radius, (1-player.angle1) * Math.PI, player.angle2 * Math.PI, false);
+		ctx.fill();
+
+
+
+		
     	};
     	
     	// >=test5
@@ -347,7 +513,9 @@ ctx.fill();
 
 		// mostrar los FPS en una capa del documento
 		// que hemos construído en la función start()
+		
 		fpsContainer.innerHTML = 'FPS: ' + fps; 
+		fpsContainer.style.color="Red";
 		frameCount++;
 	};
 	
@@ -362,6 +530,33 @@ ctx.fill();
 		
 		// test4
 		// Tu código aquí (reestructúralo para el test7)
+
+	/*	
+
+		if(inputStates.right==true){
+    	if(player.x<w-player.radius*2){
+      	player.x=player.x+player.speed;
+      }
+    }
+    if(inputStates.left==true){
+    	if(player.x>0){
+      	player.x=player.x-player.speed;
+      }
+    }
+    if(inputStates.up==true){
+    	if(player.y>0){
+      	player.y=player.y-player.speed;
+      }
+    }
+    if(inputStates.down==true){
+    	if(player.y<h-player.radius*2){
+      	player.y=player.y+player.speed;
+      }
+    }
+    player.draw(player.x,player.y);
+	
+	*/
+	
 		
 		// test7
 		// Tu código aquí
@@ -388,13 +583,13 @@ ctx.fill();
 		// A partir del test2 deberás borrar lo implementado en el test1
 		
 		
-		//console.log("asd");
+
 		measureFPS(time);
 		// Función Main, llamada en cada frame
-		requestAnimationFrame(mainLoop);
+		//requestAnimationFrame(mainLoop);
     		// >=test2
 		// main function, called each frame 
-		
+	
      
 		// test14
 		// Tu código aquí
@@ -436,7 +631,7 @@ ctx.fill();
 
 		// >=test3
 		//ojo: en el test3 esta instrucción es pacman.draw()
-		player.draw();
+		player.draw(player.x,player.y);
 		
 		// >=test12
 		updateTimers();
@@ -462,6 +657,56 @@ ctx.fill();
 		// add the listener to the main, window object, and update the states
 		// test4
 		// Tu código aquí
+
+		document.addEventListener('keydown', (event) => {
+			var name = event.key;
+			
+			var code = event.code;
+			console.log(code);
+			// Alert the key name and key code on keydown
+			/*switch (name){
+				case "ArrowRight":
+					mov="right";
+					console.log(code);
+					inputStates.right=true;
+					inputStates.left=false;
+					inputStates.up=false;
+					inputStates.down=false;
+				case "ArrowLeft":
+					mov="left";
+					inputStates.right=false;
+					inputStates.left=true;
+					inputStates.up=false;
+					inputStates.down=false;
+				case "ArrowUp":
+					mov="up";
+					inputStates.right=false;
+					inputStates.left=false;
+					inputStates.up=true;
+					inputStates.down=false;
+				case "ArrowDown":
+					mov="down";
+					inputStates.right=false;
+					inputStates.left=false;
+					inputStates.up=false;
+					inputStates.down=true;
+				
+			}*/
+			if(name=="ArrowRight"){
+				mov="right";
+			}
+			else if(name=="ArrowLeft"){
+				mov="left";
+			}
+			else if(name=="ArrowUp"){
+				mov="up";
+			}
+			else if(name=="ArrowDown"){
+				mov="down";
+			}
+			
+		  }, false);
+		  
 	};
 	
 	
