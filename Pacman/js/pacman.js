@@ -288,6 +288,8 @@ var GF = function(){
 		this.isWall = function(row, col) {
 			// test7
 			// Tu código aquí
+			var val = this.getMapTile(row, col);
+			return val >= 100 && val < 200;
 		};
 
 		// >=test7
@@ -296,6 +298,15 @@ var GF = function(){
 			// Tu código aquí
 			// Determinar si el jugador va a moverse a una fila,columna que tiene pared 
 			// Hacer uso de isWall
+
+			if((possiblePlayerY % (thisGame.TILE_HEIGHT/2) == 0 ||
+				possiblePlayerX % (thisGame.TILE_WIDTH/2) == 0))
+			{
+				var row = Math.trunc(possiblePlayerY/thisGame.TILE_HEIGHT);
+				var col = Math.trunc(possiblePlayerX/thisGame.TILE_WIDTH);
+				return this.isWall(row,col);
+
+			}else return true;
 		};
 		
 		// >=test11
@@ -364,27 +375,37 @@ var GF = function(){
 		}
 		*/
 
-		//test 4
+		//test 4 y 7
 		console.log(mov);
+		var fila = Math.floor(player.y/h);
+		var	colum = Math.floor(player.x/w);
 		if(mov=="right"){
-			if(player.x<(w-player.radius*2)){
+			if(player.x<(w-player.radius*2) &&
+				!thisLevel.checkIfHitWall(player.x+(thisGame.TILE_WIDTH),player.y,fila,colum))
+			{
 			  player.x=player.x+player.speed;
-		  }
+		  	}
 		}
 		if(mov=="left"){
-			if(player.x>0){
+			if(player.x>0 &&
+				!thisLevel.checkIfHitWall(player.x-(thisGame.TILE_WIDTH),player.y,fila,colum))
+			{
 			  player.x=player.x-player.speed;
-		  }
+		  	}
 		}
 		if(mov=="up"){
-			if(player.y>0){
+			if(player.y>0 &&
+				!thisLevel.checkIfHitWall(player.x,player.y-(thisGame.TILE_HEIGHT),fila,colum))
+			{
 			  player.y=player.y-player.speed;
-		  }
+		  	}
 		}
 		if(mov=="down"){
-			if(player.y<h-player.radius*2){
+			if(player.y<h-player.radius*2 &&
+				!thisLevel.checkIfHitWall(player.x,player.y+(thisGame.TILE_HEIGHT),fila,colum))
+			{
 			  player.y=player.y+player.speed;
-		  }
+		  	}
 		}
 		
 		//player.draw(player.x,player.y);
