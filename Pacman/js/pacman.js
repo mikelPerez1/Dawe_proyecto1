@@ -11,6 +11,7 @@ var h = canvas.height;
 
 window.onload= function init() {
 	var game = new GF();
+	
 	game.start();
 };
 
@@ -115,7 +116,7 @@ var GF = function(){
 		this.lvlHeight = 0;
 		
 		this.map = [];
-		var map = [];
+		//var map = [];
 		var level=this;
 		this.pellets = 0;
 		this.powerPelletBlinkTimer = 0;
@@ -124,21 +125,21 @@ var GF = function(){
 			// test5
 			// Tu código aquí
 			level=this;
-			map[col].push(newValue);
+			thisLevel.map[col].push(newValue);
 		};
 
 		this.getMapTile = function(row, col){
 			// test5
 			// Tu código aquí
-			return map[row][col];	
+			return thisLevel.map[row][col];	
 		};
 
 		this.printMap = function(){
 			// test5
 			// Tu código aquí
 			let numeros2=""
-      for (var j=0;j<map.length/2;j++){
-      	for(var i=0;i<map[j].length;i++){
+      for (var j=0;j<thisLevel.map.length/2;j++){
+      	for(var i=0;i<thisLevel.map[j].length;i++){
         	numeros2 +=level.getMapTile(j,i);
           numeros2 += " ";
         }
@@ -168,12 +169,12 @@ var GF = function(){
      		var height=datos[1].split(" ")[2];
           
      		for (var k = 0; k < height; k++) {
-    			map[k] = new Array();
+    			thisLevel.map[k] = new Array();
 			}
      		for (var j=0;j<height;j++){
      
      			var values=datos[j+4].split(" ");
-        		map.push(j);
+				 thisLevel.map.push(j);
 				
      			for (var i=0;i<width;i++){
         			var valor=parseInt(values[i]);
@@ -213,7 +214,6 @@ var GF = function(){
 			
 				for(var j=0;j<=thisGame.screenTileSize[0];j++){
 				  var valor=this.getMapTile(j,i);
-				   console.log(valor);
 				
 				if (valor>=100){
 					ctx.beginPath();
@@ -279,7 +279,7 @@ var GF = function(){
 			}
 		}
 		catch(e){
-			
+
 		}
 	
 		};
@@ -288,8 +288,11 @@ var GF = function(){
 		this.isWall = function(row, col) {
 			// test7
 			// Tu código aquí
-			var val = this.getMapTile(row, col);
-			return val >= 100 && val < 200;
+			if (this.getMapTile(col, row) > 99) {
+				return true;
+			  } else {
+				return false;
+			  }
 		};
 
 		// >=test7
@@ -298,16 +301,36 @@ var GF = function(){
 			// Tu código aquí
 			// Determinar si el jugador va a moverse a una fila,columna que tiene pared 
 			// Hacer uso de isWall
+			
+			
+          	c1 = Math.floor(possiblePlayerX / thisGame.TILE_WIDTH);
+          	c2 = Math.ceil(possiblePlayerX / thisGame.TILE_WIDTH);
+          	r1 = Math.floor(possiblePlayerY / thisGame.TILE_HEIGHT);
+          	r2 = Math.ceil(possiblePlayerY / thisGame.TILE_HEIGHT);
+          	cols = [c1];
+          	rows = [r1];
 
-			if((possiblePlayerY % (thisGame.TILE_HEIGHT/2) == 0 ||
-				possiblePlayerX % (thisGame.TILE_WIDTH/2) == 0))
-			{
-				var row = Math.trunc(possiblePlayerY/thisGame.TILE_HEIGHT);
-				var col = Math.trunc(possiblePlayerX/thisGame.TILE_WIDTH);
-				return this.isWall(row,col);
+      	if (c1 != c2) {
+        	cols.push(c2);
+      	}
+      	if (r1 != r2) {
+        	rows.push(r2);
+      	}
 
-			}else return true;
-		};
+      	for (var i = 0; i < rows.length; i++) {
+        	var r = rows[i];
+        	for (var j = 0; j < cols.length; j++) {
+          		var c = cols[j];
+          		if (this.isWall( c,r)) {
+            			return true;
+          		}
+        	}
+      	}
+
+      	return false;
+	};
+
+	
 		
 		// >=test11
 		this.checkIfHit = function(playerX, playerY, x, y, holgura){
@@ -327,7 +350,10 @@ var GF = function(){
 			// test8
 			// Tu código aquí
 			// Gestiona la recogida de píldoras
-			
+			//if(thisLevel.getMapTile(col,row)==2){
+			//	thisLevel.map[col][row]=0;
+			//}
+
 			// test9
 			// Tu código aquí
 			// Gestiona las puertas teletransportadoras
@@ -349,6 +375,7 @@ var GF = function(){
 		this.speed = 3;
 		this.angle1 = 0.25;
 		this.angle2 = 1.75;
+		
 	};
 	
 	// >=test3
@@ -375,39 +402,65 @@ var GF = function(){
 		}
 		*/
 
-		//test 4 y 7
-		console.log(mov);
-		var fila = Math.floor(player.y/h);
-		var	colum = Math.floor(player.x/w);
-		if(mov=="right"){
-			if(player.x<(w-player.radius*2) &&
-				!thisLevel.checkIfHitWall(player.x+(thisGame.TILE_WIDTH),player.y,fila,colum))
-			{
-			  player.x=player.x+player.speed;
-		  	}
-		}
-		if(mov=="left"){
-			if(player.x>0 &&
-				!thisLevel.checkIfHitWall(player.x-(thisGame.TILE_WIDTH),player.y,fila,colum))
-			{
-			  player.x=player.x-player.speed;
-		  	}
-		}
-		if(mov=="up"){
-			if(player.y>0 &&
-				!thisLevel.checkIfHitWall(player.x,player.y-(thisGame.TILE_HEIGHT),fila,colum))
-			{
-			  player.y=player.y-player.speed;
-		  	}
-		}
-		if(mov=="down"){
-			if(player.y<h-player.radius*2 &&
-				!thisLevel.checkIfHitWall(player.x,player.y+(thisGame.TILE_HEIGHT),fila,colum))
-			{
-			  player.y=player.y+player.speed;
-		  	}
-		}
+		//test 4
+		var r=Math.floor(player.x/24);
+		var c=Math.floor(player.y/24);
 		
+		
+		
+		try{
+		console.log(inputStates);
+		if(inputStates.right==true){
+			
+			if (!thisLevel.checkIfHitWall(player.x+1,player.y,r,c)) {
+			
+			
+				if(player.x<(w-player.radius*2)){
+					player.x=player.x+player.speed;
+					
+				}
+		}
+		else{
+			inputStates.right=false;
+		}
+		}
+		if(inputStates.left==true){
+			if (!thisLevel.checkIfHitWall(player.x-1,player.y,r,c)) {
+				if(player.x>0){
+				player.x=player.x-player.speed;
+				}
+		}
+		else{
+			
+			inputStates.left=false;
+
+		}
+		}
+		if(inputStates.up==true){
+			if (!thisLevel.checkIfHitWall(player.x,player.y-1,r,c)) {
+			if(player.y>0){
+			  player.y=player.y-player.speed;
+		  }
+		}else{
+			inputStates.up=false;
+			
+		}
+		}
+		if(inputStates.down==true){
+			if (!thisLevel.checkIfHitWall(player.x,player.y+1,r,c)) {
+			if(player.y<h-player.radius*2){
+			  player.y=player.y+player.speed;
+		  }
+		}
+		else{
+			inputStates.down=false;
+		}
+		}
+	}
+	catch(e){
+		console.log("error de movimiento");
+	}
+
 		//player.draw(player.x,player.y);
 		
 	   
@@ -683,7 +736,7 @@ ctx.fill();
 			var name = event.key;
 			
 			var code = event.code;
-			console.log(code);
+			
 			// Alert the key name and key code on keydown
 			/*switch (name){
 				case "ArrowRight":
@@ -715,15 +768,27 @@ ctx.fill();
 			}*/
 			if(name=="ArrowRight"){
 				mov="right";
+				inputStates.right=true;
+				inputStates.left=false;
+	
 			}
-			else if(name=="ArrowLeft"){
+			if(name=="ArrowLeft"){
 				mov="left";
+				inputStates.left=true;
+				inputStates.right=false;
+
 			}
-			else if(name=="ArrowUp"){
+			 if(name=="ArrowUp"){
 				mov="up";
+				inputStates.up=true;
+				inputStates.down=false;
+
 			}
-			else if(name=="ArrowDown"){
+			if(name=="ArrowDown"){
 				mov="down";
+				inputStates.down=true;
+				inputStates.up=false;
+
 			}
 			
 		  }, false);
@@ -743,7 +808,25 @@ ctx.fill();
 		// Tu código aquí
 		// Inicialmente Pacman debe empezar a moverse en horizontal hacia la derecha, con una velocidad igual a su atributo speed
 		// inicializa la posición inicial de Pacman tal y como indica el enunciado
-	
+		var bol=false;
+		var r;
+		var c;
+		player.x=10*24;
+		player.y=16*24;
+		
+
+		/*
+		for (var i=0;i<thisLevel.map.length;i++){
+			for(var j=0;j<thisLevel.map[i].length;j++){
+				if(thisLevel.getMapTile(i,j)==4){
+					r=i;
+					c=j;
+					console.log(i+" "+j);
+					break;
+				}
+			}
+		}
+		*/
 		// test10
 		// Tu código aquí
 		// Inicializa los atributos x,y, velX, velY, speed de la clase Ghost de forma conveniente
