@@ -131,6 +131,7 @@ var GF = function(){
 		this.getMapTile = function(row, col){
 			// test5
 			// Tu código aquí
+			
 			return thisLevel.map[row][col];	
 		};
 
@@ -182,6 +183,10 @@ var GF = function(){
 						player.homex=i;
 						player.homey=j;
 						console.log("empiece "+j +" "+i);
+					}
+					if(valor==2){
+						thisLevel.pellets=thisLevel.pellets+1;
+						
 					}
           			level.setMapTile(i,j,valor);
         }
@@ -354,9 +359,20 @@ var GF = function(){
 			// test8
 			// Tu código aquí
 			// Gestiona la recogida de píldoras
-			//if(thisLevel.getMapTile(col,row)==2){
-			//	thisLevel.map[col][row]=0;
-			//}
+			try{
+				
+			if(this.getMapTile(col,row)==2){
+			
+				level.map[col][row]=0;
+				thisLevel.pellets=thisLevel.pellets-1;
+				if(thisLevel.pellets==0){
+					console.log("has ganado");
+				}
+			}
+		}
+		catch(e){
+			console.log(e);
+		}
 
 			// test9
 			// Tu código aquí
@@ -382,7 +398,8 @@ var GF = function(){
 		this.homex=0;
 		this.homey=0;
 		this.reiniciado=false;
-		
+		this.nearestRow=0;
+		this.nearestCol=0;
 	};
 	
 	// >=test3
@@ -412,11 +429,11 @@ var GF = function(){
 		//test 4
 		var r=Math.floor(player.x/24);
 		var c=Math.floor(player.y/24);
-		
+		player.nearestRow=r;
+		player.nearestCol=c;
 		
 		
 		try{
-		console.log(inputStates);
 		if(inputStates.right==true){
 			
 			if (!thisLevel.checkIfHitWall(player.x+1,player.y,r,c)) {
@@ -480,6 +497,7 @@ var GF = function(){
 		// dentro del código implementado en el test7:
 		// tras actualizar this.x  y  this.y... 
 		// check for collisions with other tiles (pellets, etc)
+		
 		 thisLevel.checkIfHitSomething(this.x, this.y, this.nearestRow, this.nearestCol);
 		
 		// test11
@@ -718,6 +736,7 @@ ctx.fill();
 
 		// >=test3
 		//ojo: en el test3 esta instrucción es pacman.draw()
+		console.log(thisLevel.pellets);	
 		player.draw(player.x,player.y);
 		
 		// >=test12
