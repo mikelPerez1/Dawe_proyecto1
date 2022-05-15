@@ -183,6 +183,7 @@ var GF = function () {
     this.drawMap = function () {
       var TILE_WIDTH = thisGame.TILE_WIDTH;
       var TILE_HEIGHT = thisGame.TILE_HEIGHT;
+      this.powerPelletBlinkTimer += 1;
 
       var tileID = {
         "door-h": 20,
@@ -207,7 +208,7 @@ var GF = function () {
               ctx.closePath();
               ctx.fillStyle = "Blue";
               ctx.fill();
-            } else if (valor == 3) {
+            } else if (valor == 3 && this.powerPelletBlinkTimer < 30) {
               ctx.beginPath();
               ctx.moveTo(i * TILE_WIDTH, j * TILE_HEIGHT);
               ctx.lineTo((i + 1) * TILE_WIDTH, j * TILE_HEIGHT);
@@ -261,6 +262,9 @@ var GF = function () {
               ctx.fill();
             }
           }
+        }
+        if (this.powerPelletBlinkTimer == 60) {
+          this.powerPelletBlinkTimer = 0;
         }
       } catch (e) {}
     };
@@ -406,8 +410,6 @@ var GF = function () {
           if (!thisLevel.checkIfHitWall(player.x + 1, player.y, r, c)) {
             player.x = player.x + player.speed;
           }
-        } else {
-          inputStates.right = false;
         }
       }
       if (inputStates.left == true) {
@@ -415,8 +417,6 @@ var GF = function () {
           if (!thisLevel.checkIfHitWall(player.x - 1, player.y, r, c)) {
             player.x = player.x - player.speed;
           }
-        } else {
-          inputStates.left = false;
         }
       }
       if (inputStates.up == true) {
@@ -425,8 +425,6 @@ var GF = function () {
           if (!thisLevel.checkIfHitWall(player.x, player.y - 1, r, c)) {
             player.y = player.y - player.speed;
           }
-        } else {
-          inputStates.up = false;
         }
       }
       if (inputStates.down == true) {
@@ -434,8 +432,6 @@ var GF = function () {
           if (!thisLevel.checkIfHitWall(player.x, player.y + 1, r, c)) {
             player.y = player.y + player.speed;
           }
-        } else {
-          inputStates.down = false;
         }
       }
     } catch (e) {
