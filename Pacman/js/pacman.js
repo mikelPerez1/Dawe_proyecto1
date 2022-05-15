@@ -344,6 +344,20 @@ var GF = function () {
           if (thisLevel.pellets == 0) {
             console.log("has ganado");
           }
+        } else if (this.getMapTile(col, row) == 20) {
+          player.x = (this.lvlWidth - 2) * thisGame.TILE_WIDTH;
+          if (player.velX > 0) {
+            player.x = (this.lvlWidth - 2) * thisGame.TILE_WIDTH;
+          } else {
+            player.x = thisGame.TILE_WIDTH;
+          }
+        } else if (this.getMapTile(col, row) == 21) {
+          //player.y = (this.lvlHeight - 2) * thisGame.TILE_HEIGHT;
+          if (player.velY > 0) {
+            player.y = (this.lvlHeight - 2) * thisGame.TILE_HEIGHT;
+          } else {
+            player.y = thisGame.TILE_HEIGHT;
+          }
         }
       } catch (e) {
         console.log(e);
@@ -591,7 +605,7 @@ ctx.fill();
   var checkInputs = function () {
     // test4
     // Tu código aquí (reestructúralo para el test7)
-
+    /*
     if (inputStates.right == true) {
       if (player.x < w - player.radius * 2) {
         player.velX = player.speed;
@@ -617,7 +631,7 @@ ctx.fill();
       }
     }
     player.draw(player.x, player.y);
-
+*/
     // test7
     // Tu código aquí
     // LEE bien el enunciado, especialmente la nota de ATENCION que
