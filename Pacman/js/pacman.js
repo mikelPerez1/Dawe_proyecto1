@@ -178,7 +178,11 @@ var GF = function(){
 				
      			for (var i=0;i<width;i++){
         			var valor=parseInt(values[i]);
-        
+					if(valor==4){
+						player.homex=i;
+						player.homey=j;
+						console.log("empiece "+j +" "+i);
+					}
           			level.setMapTile(i,j,valor);
         }
      }
@@ -190,7 +194,7 @@ var GF = function(){
 		  //player.draw(player.x,player.y);
        };
 		 consulta.send();
-     
+	   	
 			// test10
 			// Tu código aquí
 		};
@@ -375,6 +379,9 @@ var GF = function(){
 		this.speed = 3;
 		this.angle1 = 0.25;
 		this.angle2 = 1.75;
+		this.homex=0;
+		this.homey=0;
+		this.reiniciado=false;
 		
 	};
 	
@@ -680,7 +687,13 @@ ctx.fill();
 		//ojo: en el test3 esta instrucción es pacman.move()
 		player.move();
 
-
+		if(!player.reiniciado){
+			if(player.homex!=0 && player.homey!=0){
+				player.x=player.homex*24;
+				player.y=player.homey*24;
+				player.reiniciado=true;
+			}
+		}
 		// test14
 		// Tu código aquí
 		// en modo HIT_GHOST
@@ -695,7 +708,7 @@ ctx.fill();
 		// >=test2
 		// Clear the canvas
 		clearCanvas();
-   
+		
    		// >=test6
 		thisLevel.drawMap();
 
@@ -811,10 +824,11 @@ ctx.fill();
 		var bol=false;
 		var r;
 		var c;
-		player.x=10*24;
-		player.y=16*24;
 		
-
+		player.x=player.homex*24;
+		player.y=player.homey*24;
+		
+		
 		/*
 		for (var i=0;i<thisLevel.map.length;i++){
 			for(var j=0;j<thisLevel.map[i].length;j++){
@@ -845,7 +859,8 @@ ctx.fill();
        	
        	// >=test4
 		addListeners();
-
+		requestAnimationFrame(mainLoop);
+		
 		// >=test7
 		reset();
 
@@ -881,4 +896,10 @@ game.start();
 
 
 
-
+function sleep(milliseconds) {
+	const date = Date.now();
+	let currentDate = null;
+	do {
+	  currentDate = Date.now();
+	} while (currentDate - date < milliseconds);
+  }
