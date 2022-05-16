@@ -56,8 +56,8 @@ var GF = function () {
     this.ctx = ctx;
 
     this.id = id;
-    this.homeX = 0;
-    this.homeY = 0;
+    this.homeX =0;
+    this.homeY =0;
     
     this.draw = function () {
       // test10
@@ -264,31 +264,27 @@ var GF = function () {
                 player.homey = j;
            
               }
-              if (valor == 10) {
-                for(var g=0;g<numGhosts;g++){
-                ghosts[g].homeX = i;
-                ghosts[g].homeY = j;
-                }
-              
-              }
+             
               if (valor == 2) {
                 thisLevel.pellets = thisLevel.pellets + 1;
               }
               level.setMapTile(i, j, valor);
             }
           }
+          
 
           //level.printMap();
         }
+        
         //level.drawMap();
         //player.draw(player.x,player.y);
       };
       consulta.send();
-
+     
       // test10
       // Tu código aquí
     };
-
+    
     // >=test6
     this.drawMap = function () {
       var TILE_WIDTH = thisGame.TILE_WIDTH;
@@ -1070,19 +1066,17 @@ ctx.fill();
     // Tu código aquí
     // Inicialmente Pacman debe empezar a moverse en horizontal hacia la derecha, con una velocidad igual a su atributo speed
     // inicializa la posición inicial de Pacman tal y como indica el enunciado
-    var bol = false;
-    var r;
-    var c;
-
+  
+    
     player.x = player.homex * 24;
     player.y = player.homey * 24;
 
     for(var g=0;g<numGhosts;g++){
-
-      ghosts[g].x=10*TILE_WIDTH;
-      ghosts[g].y=10*TILE_HEIGHT;
       ghosts[g].homeX=10*TILE_WIDTH;
       ghosts[g].homeY=10*TILE_HEIGHT;
+      ghosts[g].x=ghosts[g].homeX;
+      ghosts[g].y=ghosts[g].homeX;
+      
       ghosts[g].NORMAL=true;
       ghosts[g].VULNERABLE=false;
       ghosts[g].SPECTACLES=false;
