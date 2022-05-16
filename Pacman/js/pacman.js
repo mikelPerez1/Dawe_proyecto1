@@ -379,7 +379,7 @@ var GF = function () {
     this.radius = 10;
     this.x = 0;
     this.y = 0;
-    this.speed = 3;
+    this.speed = 1;
     this.angle1 = 0.25;
     this.angle2 = 1.75;
     this.homex = 0;
@@ -413,44 +413,28 @@ var GF = function () {
 		*/
 
     //test 4
-    var r = Math.floor(player.x / 24);
-    var c = Math.floor(player.y / 24);
+    var r = Math.ceil(player.x / 24);
+    var c = Math.ceil(player.y / 24);
     player.nearestRow = r;
     player.nearestCol = c;
+    try{
+    if(!thisLevel.checkIfHitWall(player.x+ player.velX, player.y+player.velY,player.nearestRow,player.nearestCol)){
+     
+      player.x=player.x+player.velX;
+      player.y=player.y+player.velY;
+    
 
-    try {
-      if (inputStates.right == true) {
-        if (player.x < w - player.radius * 2) {
-          if (!thisLevel.checkIfHitWall(player.x + 1, player.y, r, c)) {
-            player.x = player.x + player.speed;
-          }
-        }
-      }
-      if (inputStates.left == true) {
-        if (player.x > 0) {
-          if (!thisLevel.checkIfHitWall(player.x - 1, player.y, r, c)) {
-            player.x = player.x - player.speed;
-          }
-        }
-      }
-      if (inputStates.up == true) {
-        console.log(inputStates.up);
-        if (player.y > 0) {
-          if (!thisLevel.checkIfHitWall(player.x, player.y - 1, r, c)) {
-            player.y = player.y - player.speed;
-          }
-        }
-      }
-      if (inputStates.down == true) {
-        if (player.y < h - player.radius * 2) {
-          if (!thisLevel.checkIfHitWall(player.x, player.y + 1, r, c)) {
-            player.y = player.y + player.speed;
-          }
-        }
-      }
-    } catch (e) {
-      console.log("error de movimiento");
+
     }
+    else{
+      player.velX=0;
+      player.velY=0;
+      
+    }
+  }
+  catch(e){
+    console.log(e);
+  }
 
     //player.draw(player.x,player.y);
 
@@ -605,33 +589,63 @@ ctx.fill();
   var checkInputs = function () {
     // test4
     // Tu código aquí (reestructúralo para el test7)
-    /*
-    if (inputStates.right == true) {
-      if (player.x < w - player.radius * 2) {
-        player.velX = player.speed;
-        player.velY = 0;
+    try{
+      if (inputStates.right == true) {
+        if (!thisLevel.checkIfHitWall(player.x + player.speed, player.y,player.nearestRow,player.nearestCol) && player.x<(w-player.radius*2)) {
+          player.velX = player.speed;
+          player.velY = 0;
+          inputStates.left=false;
+          if(inputStates.up){
+          inputStates.down=false;
+          }
+          else if(inputStates.down){
+          inputStates.up=false;
+          }else {inputStates.down=false;}
+          
+        }
       }
-    }
-    if (inputStates.left == true) {
-      if (player.x > 0) {
-        player.velX = -player.speed;
-        player.velY = 0;
+      if (inputStates.left == true) {
+        if (!thisLevel.checkIfHitWall(player.x - player.speed, player.y,player.nearestRow,player.nearestCol) && player.x>0) {
+          player.velX = -player.speed;
+          player.velY = 0;
+          inputStates.right=false;
+          if(inputStates.up){
+            inputStates.down=false;
+            }
+            else if(inputStates.down){
+            inputStates.up=false;
+            }else {inputStates.down=false;}
+        }
       }
-    }
-    if (inputStates.up == true) {
-      if (player.y > 0) {
-        player.velX = 0;
-        player.velY = -player.speed;
+      if (inputStates.up == true) {
+        if (!thisLevel.checkIfHitWall(player.x, player.y-player.speed,player.nearestRow,player.nearestCol) && player.y>0) {
+          player.velX = 0;
+          player.velY = -player.speed;
+          inputStates.down=false;
+          if(inputStates.right){
+            inputStates.left=false;
+            }
+            else if(inputStates.left){
+            inputStates.right=false;
+            }else {inputStates.left=false;}
+        }
       }
-    }
-    if (inputStates.down == true) {
-      if (player.y < h - player.radius * 2) {
-        player.velX = 0;
-        player.velY = player.speed;
+      if (inputStates.down == true) {
+        if (!thisLevel.checkIfHitWall(player.x, player.y+player.speed,player.nearestRow,player.nearestCol) && player.y<(h-player.radius*2)) {
+          player.velX = 0;
+          player.velY = player.speed;
+          inputStates.up=false;
+          if(inputStates.right){
+            inputStates.left=false;
+            }
+            else if(inputStates.left){
+            inputStates.right=false;
+            }else {inputStates.left=false;}
+        }
       }
+    }catch(e){
+  
     }
-    player.draw(player.x, player.y);
-*/
     // test7
     // Tu código aquí
     // LEE bien el enunciado, especialmente la nota de ATENCION que
@@ -766,25 +780,33 @@ ctx.fill();
 					inputStates.down=true;
 				
 			}*/
+      inputStates.right=false;
+      inputStates.left = false;
+      inputStates.down=false;
+      inputStates.up=false;
+
+
         if (name == "ArrowRight") {
           mov = "right";
           inputStates.right = true;
           inputStates.left = false;
+            
         }
         if (name == "ArrowLeft") {
           mov = "left";
           inputStates.left = true;
           inputStates.right = false;
+
         }
         if (name == "ArrowUp") {
           mov = "up";
           inputStates.up = true;
-          inputStates.down = false;
+          inputStates.down=false;
         }
         if (name == "ArrowDown") {
           mov = "down";
           inputStates.down = true;
-          inputStates.up = false;
+          inputStates.up=false;
         }
       },
       false
@@ -838,7 +860,6 @@ ctx.fill();
 
     // >=test4
     addListeners();
-    requestAnimationFrame(mainLoop);
 
     // >=test7
     reset();
