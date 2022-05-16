@@ -57,12 +57,25 @@ var GF = function () {
     this.id = id;
     this.homeX = 0;
     this.homeY = 0;
-
+    
     this.draw = function () {
       // test10
       // Tu código aquí
       // Pintar cuerpo de fantasma
       // Pintar ojos
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y+TILE_HEIGHT);
+    
+        ctx.quadraticCurveTo(this.x+24/2, this.y-10, this.x+24, this.y+24);
+        ctx.quadraticCurveTo(this.x+24/2, this.y+10, this.x, this.y+24);
+        ctx.stroke();
+        //ctx.moveTo(this.x, this.y+24);
+    
+        
+        ctx.closePath();
+        //ctx.stroke();
+        this.ctx.fillStyle = ghostcolor[this.id];
+        ctx.fill();
       // test12
       // Tu código aquí
       // Asegúrate de pintar el fantasma de un color u otro dependiendo del estado del fantasma y de thisGame.ghostTimer
@@ -75,6 +88,50 @@ var GF = function () {
     this.move = function () {
       // test10
       // Tu código aquí
+      if((this.x % 24 ==0) && (this.y % 24==0)){
+       
+        var r=this.x/24;
+        var c=this.y/24;
+        this.nearestRow=r;
+        this.nearestCol=c;
+        pos_mov=[ [0,-1], [1,0], [0,1], [-1,0] ];
+        soluciones=[];
+        //pos_mov.forEach(element => {
+        for(var p=0;p<pos_mov.length;p++){
+          if(!thisLevel.checkIfHitWall(this.x+pos_mov[p][0],this.y+pos_mov[p][1],r,c)){
+            soluciones.push(pos_mov[p]);
+            //console.log(element);
+          }
+        }
+        //console.log("2");
+        
+        //console.log("asd");
+        //onsole.log(soluciones.length);
+        //console.log(this.y);
+       if((soluciones.length>2)|| (thisLevel.checkIfHitWall(this.x+this.velX,this.y+this.velY,r,c)) ){
+        // console.log(Math.floor(Math.random()*soluciones.length));
+        var rand = Math.floor(Math.random()*soluciones.length);
+        var rValue = soluciones[rand];
+        this.velX=rValue[0];
+       
+        this.velY=rValue[1];
+        //this.x=this.x+rValue[0];
+        //this.y=this.y+rValue[1];
+         }
+       
+      }
+      
+        if(!thisLevel.checkIfHitWall(this.x+this.velX,this.y+this.velY,r,c)){
+        this.x=this.x+this.velX;
+        this.y=this.y+this.velY;
+      
+      }
+      thisLevel.checkIfHitSomething(
+        this.x,
+        this.y,
+        this.nearestRow,
+        this.nearestCol,this.id
+      );
       // test13
       // Tu código aquí
       // Si el estado del fantasma es Ghost.SPECTACLES
@@ -324,10 +381,15 @@ var GF = function () {
     this.checkIfHit = function (playerX, playerY, x, y, holgura) {
       // Test11
       // Tu código aquí
+      if(Math.abs(playerX-x)<holgura && Math.abs(playerY-y)<holgura){
+        console.log("se han tocado");
+        return true;
+      }
+      return false;
     };
 
     // >=test8
-    this.checkIfHitSomething = function (playerX, playerY, row, col) {
+    this.checkIfHitSomething = function (playerX, playerY, row, col,id) {
       var tileID = {
         "door-h": 20,
         "door-v": 21,
@@ -339,6 +401,7 @@ var GF = function () {
       // Tu código aquí
       // Gestiona la recogida de píldoras
       try {
+        if(id==-1){
         if (this.getMapTile(col, row) == 2) {
           level.map[col][row] = 0;
           thisLevel.pellets = thisLevel.pellets - 1;
@@ -360,6 +423,24 @@ var GF = function () {
             player.y = thisGame.TILE_HEIGHT;
           }
         }
+      }
+      else{
+        if (this.getMapTile(col, row) == 20) {
+          ghosts[id].x = (this.lvlWidth - 2) * thisGame.TILE_WIDTH;
+          if (ghosts[id].velX < 0) {
+            ghosts[id].x = (this.lvlWidth - 2) * thisGame.TILE_WIDTH;
+          } else {
+            ghosts[id].x = thisGame.TILE_WIDTH;
+          }
+        } else if (this.getMapTile(col, row) == 21) {
+          ghosts[id].y = (this.lvlHeight - 2) * thisGame.TILE_HEIGHT;
+          if (ghosts[id].velY < 0) {
+            ghosts[id].y = (this.lvlHeight - 2) * thisGame.TILE_HEIGHT;
+          } else {
+            ghosts[id].y = thisGame.TILE_HEIGHT;
+          }
+        }
+      }
       } catch (e) {
         console.log(e);
       }
@@ -452,12 +533,16 @@ var GF = function () {
       this.x,
       this.y,
       this.nearestRow,
-      this.nearestCol
+      this.nearestCol,-1
     );
 
     // test11
     // Tu código aquí
     // check for collisions with the ghosts
+
+    for(var g=0;g<numGhosts;g++){
+      thisLevel.checkIfHit(player.x,player.y,ghosts[g].x,ghosts[g].y,1);
+    }
 
     // test13
     // Tu código aquí
@@ -685,7 +770,15 @@ ctx.fill();
     // test10
     // Tu código aquí
     // Mover fantasmas
+    try{
+    for(var g=0;g<numGhosts;g++){
+      ghosts[g].move();
+      //console.log(g);
+    }
+  }
+  catch(e){
 
+  }
     // >=test3
     //ojo: en el test3 esta instrucción es pacman.move()
     player.move();
@@ -717,6 +810,11 @@ ctx.fill();
     // test10
     // Tu código aquí
     // Pintar fantasmas
+   
+    for(var g=0;g<numGhosts;g++){
+      ghosts[g].draw();
+      //console.log(g);
+    }
 
     // >=test3
     //ojo: en el test3 esta instrucción es pacman.draw()
@@ -831,18 +929,12 @@ ctx.fill();
     player.x = player.homex * 24;
     player.y = player.homey * 24;
 
-    /*
-		for (var i=0;i<thisLevel.map.length;i++){
-			for(var j=0;j<thisLevel.map[i].length;j++){
-				if(thisLevel.getMapTile(i,j)==4){
-					r=i;
-					c=j;
-					console.log(i+" "+j);
-					break;
-				}
-			}
-		}
-		*/
+    for(var g=0;g<numGhosts;g++){
+      ghosts[g].x=10*TILE_WIDTH;
+      ghosts[g].y=10*TILE_HEIGHT;
+    }
+   
+		
     // test10
     // Tu código aquí
     // Inicializa los atributos x,y, velX, velY, speed de la clase Ghost de forma conveniente
