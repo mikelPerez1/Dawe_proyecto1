@@ -1112,8 +1112,8 @@ ctx.fill();
 };
 
 // >=test1
-var game = new GF();
-game.start();
+//var game = new GF();
+//game.start();
 
 function sleep(milliseconds) {
   const date = Date.now();
