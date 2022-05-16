@@ -1001,35 +1001,7 @@ ctx.fill();
 
         var code = event.code;
 
-        // Alert the key name and key code on keydown
-        /*switch (name){
-				case "ArrowRight":
-					mov="right";
-					console.log(code);
-					inputStates.right=true;
-					inputStates.left=false;
-					inputStates.up=false;
-					inputStates.down=false;
-				case "ArrowLeft":
-					mov="left";
-					inputStates.right=false;
-					inputStates.left=true;
-					inputStates.up=false;
-					inputStates.down=false;
-				case "ArrowUp":
-					mov="up";
-					inputStates.right=false;
-					inputStates.left=false;
-					inputStates.up=true;
-					inputStates.down=false;
-				case "ArrowDown":
-					mov="down";
-					inputStates.right=false;
-					inputStates.left=false;
-					inputStates.up=false;
-					inputStates.down=true;
-				
-			}*/
+        
       inputStates.right=false;
       inputStates.left = false;
       inputStates.down=false;
