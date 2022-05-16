@@ -479,7 +479,15 @@ var GF = function () {
             addToScore(20);
             thisLevel.pellets = thisLevel.pellets - 1;
             if (thisLevel.pellets == 0) {
-              console.log("has ganado");
+              alert("Has ganado!");
+              reset();
+              thisGame.NORMAL = false;
+              thisGame.HIT_GHOST = false;
+              thisGame.WAIT_TO_START = true;
+              thisGame.setMode(thisGame.WAIT_TO_START);
+              thisGame.lives = 3;
+              thisGame.points = 0;
+              thisLevel.loadLevel(thisGame.getLevelNum());
             }
           } else if (this.getMapTile(col, row) == 20) {
             player.x = (this.lvlWidth - 2) * thisGame.TILE_WIDTH;
@@ -510,12 +518,12 @@ var GF = function () {
             } else {
               ghosts[id].x = thisGame.TILE_WIDTH;
             }
-          } else if (this.getMapTile(col-1, row) == 21) {
+          } else if (this.getMapTile(col - 1, row) == 21) {
             ghosts[id].y = (this.lvlHeight - 2) * thisGame.TILE_HEIGHT;
             if (ghosts[id].velY < 0) {
               ghosts[id].y = (this.lvlHeight - 2) * thisGame.TILE_HEIGHT;
             } else {
-              ghosts[id].y = thisGame.TILE_HEIGHT*2;
+              ghosts[id].y = thisGame.TILE_HEIGHT * 2;
             }
           }
         }
@@ -959,6 +967,8 @@ ctx.fill();
           thisGame.WAIT_TO_START = true;
           thisGame.setMode(thisGame.WAIT_TO_START);
           thisGame.lives = 3;
+          thisGame.points = 0;
+          thisLevel.loadLevel(thisGame.getLevelNum());
         }
       }
     }
