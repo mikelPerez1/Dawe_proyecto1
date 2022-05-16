@@ -63,6 +63,7 @@ var GF = function () {
       // Tu código aquí
       // Pintar cuerpo de fantasma
       // Pintar ojos
+      if(!this.SPECTACLES){
         ctx.beginPath();
         ctx.moveTo(this.x, this.y+TILE_HEIGHT);
     
@@ -70,7 +71,7 @@ var GF = function () {
         ctx.quadraticCurveTo(this.x+24/2, this.y+10, this.x, this.y+24);
         ctx.stroke();
         //ctx.moveTo(this.x, this.y+24);
-    
+        
         
         ctx.closePath();
         //ctx.stroke();
@@ -89,8 +90,14 @@ var GF = function () {
         }else{
         this.ctx.fillStyle = ghostcolor[this.id];
         }
+      }
         ctx.fill();
-      // test12
+        ctx.beginPath();
+        ctx.arc(this.x+5,this.y+5,3,0,2*Math.PI,false);
+        ctx.arc(this.x+15,this.y+5,3,0,2*Math.PI,false);
+        ctx.fillStyle="White";
+        ctx.fill();
+        // test12
       // Tu código aquí
       // Asegúrate de pintar el fantasma de un color u otro dependiendo del estado del fantasma y de thisGame.ghostTimer
       // siguiendo el enunciado
@@ -102,7 +109,7 @@ var GF = function () {
     this.move = function () {
       // test10
       // Tu código aquí
-      if((this.x % 24 ==0) && (this.y % 24==0)){
+      if((this.x % 24 ==0) && (this.y % 24==0) && !this.SPECTACLES){
        
         var r=this.x/24;
         var c=this.y/24;
@@ -150,6 +157,29 @@ var GF = function () {
       // Tu código aquí
       // Si el estado del fantasma es Ghost.SPECTACLES
       // Mover el fantasma lo más recto posible hacia la casilla de salida
+      if(this.SPECTACLES){
+        var l=Math.abs(this.x-this.homeX)/100;
+        var l2=Math.abs(this.y-this.homeY)/100;
+        if(l<0.1&& l2<0.1){
+          this.x=this.homeX;
+          this.y=this.homeY;
+        }
+        if(this.x-this.homeX>0){
+          this.x=this.x-l;
+        }else if (this.x-this.homeX<0){
+          this.x=this.x+l;
+        }
+        if(this.y-this.homeY>0){
+          this.y=this.y-l2;
+        }else if (this.y-this.homeY<0){
+          this.y=this.y+l2;
+        }
+        if(this.x==this.homeX && this.y==this.homeY){
+          this.NORMAL=true;
+          this.SPECTACLES=false;
+          this.VULNERABLE=false; 
+        }
+      }
     };
   }; // fin clase Ghost
 
@@ -231,7 +261,14 @@ var GF = function () {
               if (valor == 4) {
                 player.homex = i;
                 player.homey = j;
-                console.log("empiece " + j + " " + i);
+           
+              }
+              if (valor == 10) {
+                for(var g=0;g<numGhosts;g++){
+                ghosts[g].homeX = i;
+                ghosts[g].homeY = j;
+                }
+              
               }
               if (valor == 2) {
                 thisLevel.pellets = thisLevel.pellets + 1;
@@ -564,9 +601,14 @@ var GF = function () {
 
     for(var g=0;g<numGhosts;g++){
 
-      if(thisLevel.checkIfHit(player.x,player.y,ghosts[g].x,ghosts[g].y,1)){
+      if(thisLevel.checkIfHit(player.x,player.y,ghosts[g].x,ghosts[g].y,3)){
         if(ghosts[g].VULNERABLE){
           ghosts[g].SPECTACLES=true;
+        }
+         if(ghosts[g].NORMAL==true){
+           console.log("s");
+          thisGame.setMode(2);
+        
         }
       }
     }
@@ -779,6 +821,7 @@ ctx.fill();
         ghosts[i].VULNERABLE=false;
       }
     }
+    thisGame.modeTimer=thisGame.modeTimer+1;
     
     
 
@@ -976,6 +1019,9 @@ ctx.fill();
       ghosts[g].y=10*TILE_HEIGHT;
       ghosts[g].homeX=10*TILE_WIDTH;
       ghosts[g].homeY=10*TILE_HEIGHT;
+      ghosts[g].NORMAL=true;
+      ghosts[g].VULNERABLE=false;
+      ghosts[g].SPECTACLES=false;
     }
    
 		
