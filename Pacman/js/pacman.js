@@ -264,7 +264,17 @@ var GF = function () {
                 player.homey = j;
            
               }
-             
+              if (valor == 10) {
+                for(var g=0;g<numGhosts;g++){
+                  console.log(i+" "+j);
+
+                  ghosts[g].homeX = i*TILE_WIDTH;
+                  ghosts[g].homeY = j*TILE_HEIGHT;
+                  ghosts[g].x = i*TILE_WIDTH;
+                  ghosts[g].y=j*TILE_HEIGHT;
+                }
+              
+              }
               if (valor == 2) {
                 thisLevel.pellets = thisLevel.pellets + 1;
               }
