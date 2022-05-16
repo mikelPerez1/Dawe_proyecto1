@@ -19,6 +19,7 @@ var GF = function () {
   var frameCount = 0;
   var lastTime;
   var fpsContainer;
+  var scores;
   var fps;
   var mov;
   // >=test4
@@ -455,6 +456,7 @@ var GF = function () {
         if(id==-1){
         if (this.getMapTile(col, row) == 2) {
           level.map[col][row] = 0;
+          addToScore(20);
           thisLevel.pellets = thisLevel.pellets - 1;
           if (thisLevel.pellets == 0) {
             console.log("has ganado");
@@ -605,9 +607,12 @@ var GF = function () {
         if(ghosts[g].VULNERABLE){
           ghosts[g].SPECTACLES=true;
         }
-         if(ghosts[g].NORMAL==true){
-           console.log("s");
-          thisGame.setMode(2);
+         else if(ghosts[g].NORMAL==true){
+          thisGame.NORMAL=false;
+          thisGame.WAIT_TO_START=false;
+          thisGame.HIT_GHOST=true;
+          thisGame.setMode(thisGame.HIT_GHOST);
+          
         
         }
       }
@@ -701,6 +706,9 @@ ctx.fill();
     GAME_OVER: 3,
     WAIT_TO_START: 4,
     modeTimer: 0,
+    lives: 3,
+    points:0,
+    highscore:0,
   };
 
   // >=test5
@@ -729,10 +737,18 @@ ctx.fill();
     // mostrar los FPS en una capa del documento
     // que hemos construído en la función start()
 
-    fpsContainer.innerHTML = "FPS: " + fps;
+    fpsContainer.innerHTML = "FPS: " + fps +"  Lives: "+thisGame.lives;
     fpsContainer.style.color = "Red";
     frameCount++;
   };
+  var displayScore=function(){
+    scores.innerHTML = "score: " + thisGame.points + " /  highScore: " + thisGame.highscore;
+    scores.style.color = "Red";
+
+  }
+  var addToScore=function(puntos_a_sumar){
+    thisGame.points=thisGame.points+puntos_a_sumar;
+  } 
 
   // >=test3
   // clears the canvas content
@@ -839,6 +855,8 @@ ctx.fill();
     // A partir del test2 deberás borrar lo implementado en el test1
 
     measureFPS(time);
+    displayScore();
+    
     // Función Main, llamada en cada frame
     //requestAnimationFrame(mainLoop);
     // >=test2
@@ -847,6 +865,7 @@ ctx.fill();
     // test14
     // Tu código aquí
     // sólo en modo NORMAL
+    if(thisGame.NORMAL){
 
     // >=test4
     checkInputs();
@@ -863,10 +882,11 @@ ctx.fill();
   catch(e){
 
   }
+
     // >=test3
     //ojo: en el test3 esta instrucción es pacman.move()
     player.move();
-
+}
     if (!player.reiniciado) {
       if (player.homex != 0 && player.homey != 0) {
         player.x = player.homex * 24;
@@ -877,12 +897,48 @@ ctx.fill();
     // test14
     // Tu código aquí
     // en modo HIT_GHOST
-    // seguir el enunciado...
+    // seguir el enunciado..
+    if(thisGame.HIT_GHOST){
+      
+      if(thisGame.modeTimer>200){
+        thisGame.lives=thisGame.lives-1;
+        if(thisGame.lives>0){
+        reset();
+        
+        
+        thisGame.NORMAL=false;
+        thisGame.HIT_GHOST=false;
+        thisGame.WAIT_TO_START=true;
+        thisGame.setMode(thisGame.WAIT_TO_START);
+        }
+        else{
+          console.log("Game over");
+          thisGame.GAME_OVER=true;
+          thisGame.HIT_GHOST=false;
+          thisGame.NORMAL=false;
+          thisGame.WAIT_TO_START=false;
+          thisGame.setMode(thisGame.GAME_OVER);
+        }
+      }
+    
+    }
 
     // test14
     // Tu código aquí
     // en modo WAIT_TO_START
     // seguir el enunciado...
+    if(thisGame.WAIT_TO_START){
+      if(thisGame.modeTimer>90){
+
+        //reset();
+        
+        
+        thisGame.NORMAL=true;
+        thisGame.HIT_GHOST=false;
+        thisGame.WAIT_TO_START=false;
+        thisGame.setMode(thisGame.Normal);
+      }
+    }
 
     // >=test2
     // Clear the canvas
@@ -909,7 +965,15 @@ ctx.fill();
 
     // call the animation loop every 1/60th of second
     // comentar esta instrucción en el test3
+    if(thisGame.GAME_OVER){
+      
     requestAnimationFrame(mainLoop);
+  }
+  else {
+    thisGame.NORMAL=false;
+      thisGame.HIT_GHOST=false;
+      thisGame.WAIT_TO_START=false;
+  }
 
     var start = function () {
       requestAnimationFrame(mainLoop);
@@ -1038,7 +1102,9 @@ ctx.fill();
     // >=test2
     // adds a div for displaying the fps value
     fpsContainer = document.createElement("div");
+    scores = document.createElement("div");
     document.body.appendChild(fpsContainer);
+    document.body.appendChild(scores);
 
     // >=test4
     addListeners();
