@@ -146,7 +146,8 @@ var GF = function () {
 
           var width = datos[0].split(" ")[2];
           var height = datos[1].split(" ")[2];
-
+          thisLevel.lvlHeight=height;
+          thisLevel.lvlWidth=width;
           for (var k = 0; k < height; k++) {
             thisLevel.map[k] = new Array();
           }
@@ -346,14 +347,14 @@ var GF = function () {
           }
         } else if (this.getMapTile(col, row) == 20) {
           player.x = (this.lvlWidth - 2) * thisGame.TILE_WIDTH;
-          if (player.velX > 0) {
+          if (player.velX < 0) {
             player.x = (this.lvlWidth - 2) * thisGame.TILE_WIDTH;
           } else {
             player.x = thisGame.TILE_WIDTH;
           }
         } else if (this.getMapTile(col, row) == 21) {
           //player.y = (this.lvlHeight - 2) * thisGame.TILE_HEIGHT;
-          if (player.velY > 0) {
+          if (player.velY < 0) {
             player.y = (this.lvlHeight - 2) * thisGame.TILE_HEIGHT;
           } else {
             player.y = thisGame.TILE_HEIGHT;
@@ -379,7 +380,7 @@ var GF = function () {
     this.radius = 10;
     this.x = 0;
     this.y = 0;
-    this.speed = 1;
+    this.speed = 1 ;
     this.angle1 = 0.25;
     this.angle2 = 1.75;
     this.homex = 0;
@@ -719,7 +720,6 @@ ctx.fill();
 
     // >=test3
     //ojo: en el test3 esta instrucción es pacman.draw()
-    console.log(thisLevel.pellets);
     player.draw(player.x, player.y);
 
     // >=test12
