@@ -510,12 +510,12 @@ var GF = function () {
             } else {
               ghosts[id].x = thisGame.TILE_WIDTH;
             }
-          } else if (this.getMapTile(col, row) == 21) {
+          } else if (this.getMapTile(col-1, row) == 21) {
             ghosts[id].y = (this.lvlHeight - 2) * thisGame.TILE_HEIGHT;
             if (ghosts[id].velY < 0) {
               ghosts[id].y = (this.lvlHeight - 2) * thisGame.TILE_HEIGHT;
             } else {
-              ghosts[id].y = thisGame.TILE_HEIGHT;
+              ghosts[id].y = thisGame.TILE_HEIGHT*2;
             }
           }
         }
