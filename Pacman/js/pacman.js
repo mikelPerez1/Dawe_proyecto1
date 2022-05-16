@@ -623,6 +623,7 @@ var GF = function () {
       ) {
         if (ghosts[g].VULNERABLE) {
           ghosts[g].SPECTACLES = true;
+          addToScore(50);
         } else if (ghosts[g].NORMAL == true) {
           thisGame.NORMAL = false;
           thisGame.WAIT_TO_START = false;
