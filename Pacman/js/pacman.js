@@ -74,7 +74,21 @@ var GF = function () {
         
         ctx.closePath();
         //ctx.stroke();
+        if(this.VULNERABLE){
+          if(thisGame.ghostTimer>100*2){
+          this.ctx.fillStyle = ghostcolor[4];
+          }
+          else{
+            if(thisGame.ghostTimer % 20 ==0){
+            this.ctx.fillStyle = ghostcolor[5];
+            }
+            else{
+            this.ctx.fillStyle = ghostcolor[4];
+            }
+          }
+        }else{
         this.ctx.fillStyle = ghostcolor[this.id];
+        }
         ctx.fill();
       // test12
       // Tu código aquí
@@ -423,6 +437,14 @@ var GF = function () {
             player.y = thisGame.TILE_HEIGHT;
           }
         }
+
+        else if(this.getMapTile(col, row) == 3){
+          level.map[col][row] = 0;
+          for(var i=0;i<numGhosts;i++){
+            ghosts[i].VULNERABLE=true;
+          }
+          thisGame.ghostTimer=360*2;
+        }
       }
       else{
         if (this.getMapTile(col, row) == 20) {
@@ -541,7 +563,12 @@ var GF = function () {
     // check for collisions with the ghosts
 
     for(var g=0;g<numGhosts;g++){
-      thisLevel.checkIfHit(player.x,player.y,ghosts[g].x,ghosts[g].y,1);
+
+      if(thisLevel.checkIfHit(player.x,player.y,ghosts[g].x,ghosts[g].y,1)){
+        if(ghosts[g].VULNERABLE){
+          ghosts[g].SPECTACLES=true;
+        }
+      }
     }
 
     // test13
@@ -743,6 +770,20 @@ ctx.fill();
     // test12
     // Tu código aquí
     // Actualizar thisGame.ghostTimer (y el estado de los fantasmas, tal y como se especifica en el enunciado)
+    if(thisGame.ghostTimer>0){
+    
+      thisGame.ghostTimer=thisGame.ghostTimer-1;
+    }
+    else{
+      for (var i =0;i<numGhosts;i++){
+        ghosts[i].VULNERABLE=false;
+      }
+    }
+    
+    
+
+
+
     // test14
     // Tu código aquí
     // actualiza modeTimer...
@@ -930,8 +971,11 @@ ctx.fill();
     player.y = player.homey * 24;
 
     for(var g=0;g<numGhosts;g++){
+
       ghosts[g].x=10*TILE_WIDTH;
       ghosts[g].y=10*TILE_HEIGHT;
+      ghosts[g].homeX=10*TILE_WIDTH;
+      ghosts[g].homeY=10*TILE_HEIGHT;
     }
    
 		
