@@ -539,8 +539,6 @@ var GF = function () {
   };
 
   // >=test3
-  //bol es un booleano k utilizo en el test 3
-  //var bol=true;
 
   Pacman.prototype.move = function () {
     // test3 / test4 / test7
@@ -1080,10 +1078,9 @@ ctx.fill();
     
     player.x = player.homex * 24;
     player.y = player.homey * 24;
-
+    player.velX=player.speed;
     for(var g=0;g<numGhosts;g++){
-      ghosts[g].homeX=10*TILE_WIDTH;
-      ghosts[g].homeY=10*TILE_HEIGHT;
+      
       ghosts[g].x=ghosts[g].homeX;
       ghosts[g].y=ghosts[g].homeX;
       
