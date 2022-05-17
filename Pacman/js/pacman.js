@@ -478,6 +478,7 @@ var GF = function () {
             level.map[col][row] = 0;
             addToScore(20);
             thisLevel.pellets = thisLevel.pellets - 1;
+            console.log(thisLevel.pellets);
             if (thisLevel.pellets == 0) {
               alert("Has ganado!");
               reset();
@@ -729,7 +730,7 @@ ctx.fill();
     GAME_OVER: 3,
     WAIT_TO_START: 4,
     modeTimer: 0,
-    lives: 3,
+    lives: 4,
     points: 0,
     highscore: 0,
   };
